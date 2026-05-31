@@ -1,0 +1,59 @@
+#include <vector>
+#include <set>
+#include <algorithm>
+
+using namespace std;
+
+class Solution {
+public:
+    vector<int> tree;
+    set<int> obs;
+
+    void update(int idx, int l, int r, int pos, int val){
+        if (l == r){
+            tree[idx] = val;
+            return;
+        }
+        
+        int mid = (l + r) / 2;
+        if (pos <= mid){
+            update(2 * idx, l, mid, pos, val);
+        }
+        else update(2 * idx + 1, mid + 1, r, pos, val);
+
+        tree[idx] = max(tree[2 * idx], tree[2 * idx + 1]);
+    }
+    int max_size(int idx, int l, int r, int ql, int qr){
+        if (qr < l || ql > r) return 0;
+        if (ql <= l && qr >= r) return tree[idx];
+        int mid = (l + r) / 2;
+        return max(max_size(2 * idx, l, mid, ql, qr), max_size(2 * idx + 1, mid + 1, r, ql, qr));
+    }
+    vector<bool> getResults(vector<vector<int>>& queries) {
+        int n = queries.size();
+        int max_x = INT_MIN;
+        for (auto q : queries) max_x = max(max_x, q[1]);
+        tree.assign(4 * (max_x + 2), -1);
+        obs.insert(0);
+        obs.insert(max_x + 1);
+
+        vector<bool> res;
+        update(1, 0, max_x + 1, max_x + 1, max_x + 1);
+        for (auto q : queries){
+            if (q[0] == 1){
+                auto it = obs.upper_bound(q[1]);
+                int r = *(it);
+                int l = *(--it);
+                update(1, 0, max_x + 1, q[1], q[1] - l);
+                update(1, 0, max_x + 1, r, r - q[1]);
+                obs.insert(q[1]);
+            }
+            else{
+                auto it = obs.upper_bound(q[1]);
+                int qr = *(--it);
+                res.push_back(q[2] <= max(max_size(1, 0, max_x + 1, 0, qr), q[1] - qr));
+            }
+        }
+        return res;
+    }
+};
