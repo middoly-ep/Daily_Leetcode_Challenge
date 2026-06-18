@@ -5,7 +5,7 @@ using namespace std;
 
 class Solution {
 public:
-    char processStr(string s, long long k) {
+    char processStr(string s, long long k) { 
         stack<long long> st;
         st.push(0LL);
         long long curr = 0;
