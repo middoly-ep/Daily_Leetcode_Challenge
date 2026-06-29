@@ -1,0 +1,18 @@
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+class Solution {
+public:
+    int maximumElementAfterDecrementingAndRearranging(vector<int>& arr) {
+        int n = arr.size();
+        sort(arr.begin(), arr.end());
+        int curr = 1;
+
+        for (int i = 1; i < n; i++){
+            curr = min(curr + 1, arr[i]);
+        }
+        return curr;
+    }
+};
