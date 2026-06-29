@@ -1,0 +1,20 @@
+#include <string>
+
+using namespace std;
+
+class Solution {
+public:
+    int numOfStrings(vector<string>& patterns, string word) {
+        int cnt = 0;
+        for (string s : patterns){
+            if (s.size() > word.size()) continue;
+            for (int i = 0; i <= word.size() - s.size(); i++){
+                if (s == word.substr(i, s.size())){
+                    cnt++;
+                    break;
+                }
+            }
+        }
+        return cnt;
+    }
+};
